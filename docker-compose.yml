@@ -2,14 +2,16 @@ version: '3.9'
 
 services:
   app1:
-    build: ./app
+#    build: ./app
+    image: 01020majid/ci-cd-ha-demo:latest
     container_name: app1
     restart: always
     networks:
       - ha_net
 
   app2:
-    build: ./app
+#    build: ./app
+    image: 01020majid/ci-cd-ha-demo:latest
     container_name: app2
     restart: always
     networks:
@@ -26,6 +28,18 @@ services:
       - app1
       - app2
     restart: always
+    networks:
+      - ha_net
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    restart: always
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=30
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - ha_net
 
